@@ -1,8 +1,8 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.dao.Dao;
 import ru.javawebinar.topjava.dao.MealsDao;
+import ru.javawebinar.topjava.dao.MealsMapDao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -22,12 +22,11 @@ public class MealServlet extends HttpServlet {
     private static String INSERT_OR_EDIT = "/meal.jsp";
     private static String LIST_MEAL = "/meals.jsp";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-    private Dao dao;
+    private MealsDao mealsDao;
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-        dao = new MealsDao();
+    public void init() {
+        mealsDao = new MealsMapDao();
     }
 
     @Override
@@ -37,12 +36,11 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(dateTime, request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
         String mealId = request.getParameter("id");
         if (mealId == null || mealId.isEmpty()) {
-            dao.add(meal);
+            mealsDao.add(meal);
         } else {
             meal.setId(Integer.parseInt(mealId));
-            dao.update(meal.getId(), meal);
+            mealsDao.update(meal);
         }
-        request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         response.sendRedirect("meals");
     }
 
@@ -53,18 +51,18 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             forward = LIST_MEAL;
-            request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+            request.setAttribute("mealTos", MealsUtil.filteredByStreams(mealsDao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         } else {
             switch (action) {
                 case "delete":
                     int mealId = Integer.parseInt(request.getParameter("id"));
-                    dao.delete(mealId);
-                    request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+                    mealsDao.delete(mealId);
+                    response.sendRedirect("meals");
                     break;
                 case "edit":
                     forward = INSERT_OR_EDIT;
                     mealId = Integer.parseInt(request.getParameter("id"));
-                    Meal meal = dao.getById(mealId);
+                    Meal meal = mealsDao.getById(mealId);
                     request.setAttribute("meal", meal);
                     break;
                 case "insert":
@@ -72,10 +70,7 @@ public class MealServlet extends HttpServlet {
                     break;
             }
         }
-        if ("delete".equals(action)) {
-            response.sendRedirect("meals");
-        } else {
+        if (!forward.isEmpty())
             request.getRequestDispatcher(forward).forward(request, response);
-        }
     }
 }
