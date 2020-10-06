@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import ru.javawebinar.topjava.dao.Dao;
 import ru.javawebinar.topjava.dao.MealsDao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -21,10 +22,11 @@ public class MealServlet extends HttpServlet {
     private static String INSERT_OR_EDIT = "/meal.jsp";
     private static String LIST_MEAL = "/meals.jsp";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-    private MealsDao dao;
+    private Dao dao;
 
-    public MealServlet() {
-        super();
+    @Override
+    public void init() throws ServletException {
+        super.init();
         dao = new MealsDao();
     }
 
@@ -40,7 +42,7 @@ public class MealServlet extends HttpServlet {
             meal.setId(Integer.parseInt(mealId));
             dao.update(meal.getId(), meal);
         }
-        request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000));
+        request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         request.getRequestDispatcher(LIST_MEAL).forward(request, response);
     }
 
@@ -49,22 +51,31 @@ public class MealServlet extends HttpServlet {
         log.debug("redirect to meals");
         String forward = "";
         String action = request.getParameter("action");
-        if (action.equalsIgnoreCase("delete")) {
-            int mealId = Integer.parseInt(request.getParameter("id"));
-            dao.delete(mealId);
+        if (action == null) {
             forward = LIST_MEAL;
-            request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000));
-        } else if (action.equalsIgnoreCase("edit")) {
-            forward = INSERT_OR_EDIT;
-            int mealId = Integer.parseInt(request.getParameter("id"));
-            Meal meal = dao.getMealById(mealId);
-            request.setAttribute("meal", meal);
-        } else if (action.equalsIgnoreCase("listMeal")) {
-            forward = LIST_MEAL;
-            request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000));
+            request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
         } else {
-            forward = INSERT_OR_EDIT;
+            switch (action) {
+                case "delete":
+                    int mealId = Integer.parseInt(request.getParameter("id"));
+                    dao.delete(mealId);
+                    request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+                    break;
+                case "edit":
+                    forward = INSERT_OR_EDIT;
+                    mealId = Integer.parseInt(request.getParameter("id"));
+                    Meal meal = dao.getById(mealId);
+                    request.setAttribute("meal", meal);
+                    break;
+                case "insert":
+                    forward = INSERT_OR_EDIT;
+                    break;
+            }
         }
-        request.getRequestDispatcher(forward).forward(request, response);
+        if ("delete".equals(action)) {
+            response.sendRedirect("meals");
+        } else {
+            request.getRequestDispatcher(forward).forward(request, response);
+        }
     }
 }

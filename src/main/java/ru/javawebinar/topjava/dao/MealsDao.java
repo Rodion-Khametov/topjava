@@ -5,14 +5,14 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealsDao {
+public class MealsDao implements Dao {
 
-    private final Map<Integer, Meal> mealMap = new HashMap<>();
-    private int count = 1;
+    private final ConcurrentHashMap<Integer, Meal> mealMap = new ConcurrentHashMap<>();
+    private final AtomicInteger count = new AtomicInteger();
 
     public MealsDao() {
         add(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
@@ -25,35 +25,31 @@ public class MealsDao {
 
     }
 
-    public synchronized void add(Meal meal) {
+    public Meal add(Meal meal) {
         if (meal != null) {
-            meal.setId(count);
-            mealMap.put(count, meal);
-            count++;
+            meal.setId(count.intValue());
+            mealMap.put(count.intValue(), meal);
+            count.incrementAndGet();
         }
+        return meal;
     }
 
-    public synchronized void update(int id, Meal meal) {
+    public Meal update(int id, Meal meal) {
         if (meal != null) {
             mealMap.put(id, meal);
         }
+        return meal;
     }
 
-    public synchronized void delete(int id) {
+    public void delete(int id) {
         mealMap.remove(id);
     }
 
-    public List<Meal> getAllMeals() {
-        List<Meal> meals = new ArrayList<>();
-        for (Map.Entry<Integer, Meal> entry : mealMap.entrySet()) {
-            meals.add(entry.getValue());
-        }
-        return meals;
+    public List<Meal> getAll() {
+        return new ArrayList<>(mealMap.values());
     }
 
-    public Meal getMealById(int mealId) {
+    public Meal getById(int mealId) {
         return mealMap.get(mealId);
     }
-
-
 }

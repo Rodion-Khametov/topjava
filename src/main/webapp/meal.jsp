@@ -6,7 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-<form method="POST" action='meals' name="frmAddUser">
+<form method="POST" action='meals' name="frmAddMeal">
     Date : <input
         type="datetime-local" name="date"
         value="<c:out value="${meal.dateTime}" />"/> <br/>
@@ -14,14 +14,13 @@
         type="text" name="description"
         value="<c:out value="${meal.description}" />"/> <br/>
     Calories : <input
-        type="text" name="calories"
+        type="number" name="calories"
         value="<c:out value="${meal.calories}" />"/> <br/>
     <input type="hidden" name="id"
            value="<c:out value="${meal.id}" />"/> <br/>
     <p><input type="submit" value="Save"/>
-        <a href="meals?action=listMeal">
             <button type="button" class="swd-button">Cancel</button>
-        </a></p>
+        </p>
 </form>
 </body>
 </html>
