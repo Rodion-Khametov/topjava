@@ -12,24 +12,30 @@
 <hr>
 <h2>Meals</h2>
 
-<table BORDER="1" align="left" bgcolor="#FFFFFF">
+<table BORDER="1" bgcolor="#FFFFFF">
     <thead>
-    <tr>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Calories</th>
+    <th>
+    <th>Date</th>
+    <th>Description</th>
+    <th>Calories</th>
+    <th colspan=2>Action</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach items="${mealTos}" var="meal">
         <tr style="${meal.excess != true ? 'color: green':'color: red'}">
+            <td>${meal.id}</td>
             <td><fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
                 <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}"/></td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
+            <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Update</a></td>
+            <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
+        </tr>
         </tr>
     </c:forEach>
     </tbody>
 </table>
+<p><a href="meals?action=insert">Add User</a></p>
 </body>
 </html>
