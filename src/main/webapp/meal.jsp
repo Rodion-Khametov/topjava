@@ -7,9 +7,6 @@
 </head>
 <body>
 <form method="POST" action='meals' name="frmAddUser">
-    ID : <input
-        type="text" name="ID"
-        value="<c:out value="${meal.id}" />"/> <br/>
     Date : <input
         type="datetime-local" name="date"
         value="<c:out value="${meal.dateTime}" />"/> <br/>
