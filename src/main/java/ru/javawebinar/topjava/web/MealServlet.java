@@ -43,7 +43,7 @@ public class MealServlet extends HttpServlet {
             dao.update(meal.getId(), meal);
         }
         request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
-        request.getRequestDispatcher(LIST_MEAL).forward(request, response);
+        response.sendRedirect("meals");
     }
 
     @Override
