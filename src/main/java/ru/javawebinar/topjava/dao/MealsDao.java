@@ -33,9 +33,9 @@ public class MealsDao {
         }
     }
 
-    public synchronized void update(Meal meal) {
+    public synchronized void update(int id, Meal meal) {
         if (meal != null) {
-            mealMap.put(meal.getId(), meal);
+            mealMap.put(id, meal);
         }
     }
 

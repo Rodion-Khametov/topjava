@@ -16,6 +16,8 @@
     Calories : <input
         type="text" name="calories"
         value="<c:out value="${meal.calories}" />"/> <br/>
+    <input type="hidden" name="id"
+           value="<c:out value="${meal.id}" />"/> <br/>
     <p><input type="submit" value="Save"/>
         <a href="meals?action=listMeal">
             <button type="button" class="swd-button">Cancel</button>

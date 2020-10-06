@@ -37,7 +37,8 @@ public class MealServlet extends HttpServlet {
         if (mealId == null || mealId.isEmpty()) {
             dao.add(meal);
         } else {
-            dao.update(meal);
+            meal.setId(Integer.parseInt(mealId));
+            dao.update(meal.getId(), meal);
         }
         request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000));
         request.getRequestDispatcher(LIST_MEAL).forward(request, response);
@@ -58,11 +59,11 @@ public class MealServlet extends HttpServlet {
             int mealId = Integer.parseInt(request.getParameter("id"));
             Meal meal = dao.getMealById(mealId);
             request.setAttribute("meal", meal);
-        } else if (action.equalsIgnoreCase("insert")) {
-            forward = INSERT_OR_EDIT;
         } else if (action.equalsIgnoreCase("listMeal")) {
             forward = LIST_MEAL;
             request.setAttribute("mealTos", MealsUtil.filteredByStreams(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000));
+        } else {
+            forward = INSERT_OR_EDIT;
         }
         request.getRequestDispatcher(forward).forward(request, response);
     }
