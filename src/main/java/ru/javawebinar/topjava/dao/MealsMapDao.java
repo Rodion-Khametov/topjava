@@ -6,12 +6,13 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealsMapDao implements MealsDao {
 
-    private final ConcurrentHashMap<Integer, Meal> mealMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Meal> mealMap = new ConcurrentHashMap<>();
     private final AtomicInteger count = new AtomicInteger();
 
     public MealsMapDao() {
@@ -34,8 +35,10 @@ public class MealsMapDao implements MealsDao {
     }
 
     public Meal update(Meal meal) {
-        if (meal != null && mealMap.containsKey(meal.getId())) {
-            mealMap.put(meal.getId(), meal);
+        if (meal != null) {
+            mealMap.replace(meal.getId(), meal);
+        } else {
+            return null;
         }
         return meal;
     }

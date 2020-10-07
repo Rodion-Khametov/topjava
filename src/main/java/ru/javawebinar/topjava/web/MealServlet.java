@@ -68,6 +68,9 @@ public class MealServlet extends HttpServlet {
                 case "insert":
                     forward = INSERT_OR_EDIT;
                     break;
+                default:
+                    forward = LIST_MEAL;
+                    break;
             }
         }
         if (!forward.isEmpty())
