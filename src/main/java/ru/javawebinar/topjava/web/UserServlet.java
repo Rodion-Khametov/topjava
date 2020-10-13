@@ -14,15 +14,20 @@ public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("forward to users");
-        String action = request.getParameter("action");
-        if (action.equalsIgnoreCase("user")){
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("selectUsers");
+        if (action.equalsIgnoreCase("user")) {
+            SecurityUtil.setAuthUserId(1);
             response.sendRedirect("meals");
-        }
-        else if(action.equalsIgnoreCase("admin")){
+        } else if (action.equalsIgnoreCase("admin")) {
             SecurityUtil.setAuthUserId(2);
             response.sendRedirect("meals");
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("forward to users");
+
     }
 }

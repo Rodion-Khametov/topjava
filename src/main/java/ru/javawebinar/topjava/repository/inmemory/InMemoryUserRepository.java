@@ -19,7 +19,6 @@ public class InMemoryUserRepository implements UserRepository {
     private final Map<Integer, User> repository = new ConcurrentHashMap<>();
     private final AtomicInteger count = new AtomicInteger(0);
 
-
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
@@ -29,11 +28,12 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        if (user != null) {
+        if (user.isNew()) {
             user.setId(count.incrementAndGet());
             repository.put(user.getId(), user);
+            return user;
         }
-        return user;
+        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
@@ -46,28 +46,15 @@ public class InMemoryUserRepository implements UserRepository {
     public List<User> getAll() {
         log.info("getAll");
         return repository.values().stream()
-                .sorted(new Sort())
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.entrySet().stream()
-                .filter(users -> users.getValue().getEmail().equals(email))
-                .findFirst()
-                .map(Map.Entry::getValue)
-                .orElse(null);
-    }
-
-    private class Sort implements Comparator<User>{
-
-        @Override
-        public int compare(User user1, User user2) {
-            if (user1.getName().equals(user2.getName())){
-                return user1.getEmail().compareTo(user2.getEmail());
-            }
-            return user1.getName().compareTo(user2.getName());
-        }
+        return repository.values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst().orElse(null);
     }
 }
