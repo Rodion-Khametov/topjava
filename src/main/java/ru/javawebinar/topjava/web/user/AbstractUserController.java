@@ -17,6 +17,10 @@ public abstract class AbstractUserController {
     @Autowired
     private UserService service;
 
+    public void setService(UserService service) {
+        this.service = service;
+    }
+
     public List<User> getAll() {
         log.info("getAll");
         return service.getAll();
