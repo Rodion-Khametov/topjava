@@ -13,6 +13,8 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
@@ -90,6 +92,14 @@ public class MealServiceTest {
         List<Meal> allBetween = service.getBetweenInclusive(null,
                 null, USER_ID);
         assertMatch(allBetween, userMeal5, userMeal4, userMeal3, userMeal2, userMeal1);
+    }
+
+    @Test
+    public void getBetweenExclusive() {
+        List<Meal> allBetween = service.getBetweenInclusive(
+                LocalDate.of(1985, Month.JANUARY, 24),
+                LocalDate.of(1998, Month.JULY, 30), USER_ID);
+        assertNotMatch(allBetween, userMeal5, userMeal4, userMeal3, userMeal2, userMeal1);
     }
 
     @Test

@@ -54,7 +54,16 @@ public class MealTestData {
         assertMatch(actual, Arrays.asList(expected));
     }
 
+    public static void assertNotMatch(Iterable<Meal> actual, Meal... expected) {
+        assertNotMatch(actual, Arrays.asList(expected));
+    }
+
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
     }
+
+    public static void assertNotMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
+        assertThat(actual).usingFieldByFieldElementComparator().isNotEqualTo(expected);
+    }
+
 }
