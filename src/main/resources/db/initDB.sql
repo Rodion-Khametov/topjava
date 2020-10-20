@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS meals;
 DROP SEQUENCE IF EXISTS global_seq;
 
@@ -29,7 +29,7 @@ CREATE TABLE meals
 (
   user_id     INTEGER           NOT NULL,
   id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-  dateTime    TIMESTAMP         NOT NULL,
+  date_time    TIMESTAMP         NOT NULL,
   description VARCHAR           NOT NULL,
   calories    INTEGER           NOT NULL,
   CONSTRAINT meals_dateTime_idx UNIQUE(user_id, dateTime),
