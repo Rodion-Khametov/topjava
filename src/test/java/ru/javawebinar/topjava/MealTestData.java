@@ -42,11 +42,12 @@ public class MealTestData {
         Meal updated = new Meal(userMeal1);
         updated.setDescription("UpdatedDesc");
         updated.setCalories(200);
+        updated.setDateTime(LocalDateTime.of(2019, Month.JUNE, 25, 0, 0));
         return updated;
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().hasSameClassAs(expected).isEqualTo(expected);
     }
 
     public static void assertMatch(Iterable<Meal> actual, Meal... expected) {
@@ -54,6 +55,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).usingDefaultElementComparator().isEqualTo(expected);
+        assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
     }
 }

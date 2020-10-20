@@ -13,9 +13,6 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
@@ -43,15 +40,16 @@ public class MealServiceTest {
         Meal newMeal = MealTestData.getNew();
         Meal created = service.create(newMeal, USER_ID);
         Integer newId = created.getId();
-        newMeal.setId(newId);
-        assertMatch(created, newMeal);
-        assertMatch(service.get(newId, USER_ID), newMeal);
+        Meal standardMeal = MealTestData.getNew();
+        standardMeal.setId(newId);
+        assertMatch(created, standardMeal);
+        assertMatch(service.get(newId, USER_ID), standardMeal);
     }
 
     @Test
     public void duplicateDateTimeCreate() {
         assertThrows(DataAccessException.class, () ->
-                service.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0),
+                service.create(new Meal(null, userMeal1.getDateTime(),
                         "Duplicate", 1150), USER_ID));
     }
 
@@ -89,8 +87,8 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
-        List<Meal> allBetween = service.getBetweenInclusive(LocalDate.of(2020, Month.JANUARY, 30),
-                LocalDate.of(2020, Month.JANUARY, 31), USER_ID);
+        List<Meal> allBetween = service.getBetweenInclusive(null,
+                null, USER_ID);
         assertMatch(allBetween, userMeal5, userMeal4, userMeal3, userMeal2, userMeal1);
     }
 
@@ -104,7 +102,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = MealTestData.getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(USER_MEAL1_ID, USER_ID), updated);
+        assertMatch(service.get(USER_MEAL1_ID, USER_ID), MealTestData.getUpdated());
     }
 
     @Test
