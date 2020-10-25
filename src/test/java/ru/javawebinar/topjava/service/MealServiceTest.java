@@ -36,15 +36,8 @@ public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
     private static final StringBuffer classLog = new StringBuffer();
-
-
-    private static void logInfo(Description description, long nanos) {
-        String testName = description.getMethodName();
-        log.info(String.format("Test %s %s, spent %d microseconds",
-                testName, "succeeded", TimeUnit.NANOSECONDS.toMicros(nanos)));
-    }
     @Rule
-    public Stopwatch stopwatch = new Stopwatch(){
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void succeeded(long nanos, Description description) {
             logInfo(description, nanos);
@@ -53,15 +46,20 @@ public class MealServiceTest {
         @Override
         protected void finished(long nanos, Description description) {
             classLog.append(String.format("\n" + "Test -%s- %s, spent %d milliseconds",
-                    description.getMethodName(), "finished", TimeUnit.NANOSECONDS.toMillis(nanos))) ;
+                    description.getMethodName(), "finished", TimeUnit.NANOSECONDS.toMillis(nanos)));
         }
     };
-
     @Autowired
     private MealService service;
 
+    private static void logInfo(Description description, long nanos) {
+        String testName = description.getMethodName();
+        log.info(String.format("Test %s %s, spent %d microseconds",
+                testName, "succeeded", TimeUnit.NANOSECONDS.toMicros(nanos)));
+    }
+
     @AfterClass
-    public static void classLog(){
+    public static void classLog() {
         log.info(classLog.toString());
     }
 

@@ -31,8 +31,7 @@ public class JpaMealRepository implements MealRepository {
             Meal oldMeal = em.getReference(Meal.class, meal.getId());
             if (oldMeal.getUser() == ref) {
                 return em.merge(meal);
-            }
-            else {
+            } else {
                 return null;
             }
         }
