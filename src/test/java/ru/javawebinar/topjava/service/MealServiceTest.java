@@ -1,7 +1,13 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,6 +19,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -27,8 +34,36 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final StringBuffer classLog = new StringBuffer();
+
+
+    private static void logInfo(Description description, long nanos) {
+        String testName = description.getMethodName();
+        log.info(String.format("Test %s %s, spent %d microseconds",
+                testName, "succeeded", TimeUnit.NANOSECONDS.toMicros(nanos)));
+    }
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch(){
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            classLog.append(String.format("\n" + "Test -%s- %s, spent %d milliseconds",
+                    description.getMethodName(), "finished", TimeUnit.NANOSECONDS.toMillis(nanos))) ;
+        }
+    };
+
     @Autowired
     private MealService service;
+
+    @AfterClass
+    public static void classLog(){
+        log.info(classLog.toString());
+    }
 
     @Test
     public void delete() throws Exception {
