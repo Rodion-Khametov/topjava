@@ -35,28 +35,19 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
-    private static final StringBuffer classLog = new StringBuffer();
+    private static final StringBuilder classLog = new StringBuilder();
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
-        @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, nanos);
-        }
 
         @Override
         protected void finished(long nanos, Description description) {
-            classLog.append(String.format("\n" + "Test -%s- %s, spent %d milliseconds",
-                    description.getMethodName(), "finished", TimeUnit.NANOSECONDS.toMillis(nanos)));
+            log.info(String.format("%s %d ms", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
+            classLog.append(String.format("\n" + "%-30s %-5d ms",
+                    description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
         }
     };
     @Autowired
     private MealService service;
-
-    private static void logInfo(Description description, long nanos) {
-        String testName = description.getMethodName();
-        log.info(String.format("Test %s %s, spent %d microseconds",
-                testName, "succeeded", TimeUnit.NANOSECONDS.toMicros(nanos)));
-    }
 
     @AfterClass
     public static void classLog() {
