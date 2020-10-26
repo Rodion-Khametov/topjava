@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.model;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -16,10 +17,6 @@ import java.time.LocalTime;
         @NamedQuery(name = Meal.GET_BETWEEN_HALF_OPEN, query = "SELECT m FROM Meal m WHERE m.user.id =:userId AND m.dateTime >=:startDateTime " +
                 "AND m.dateTime <:endDateTime ORDER BY m.dateTime DESC"),
 })
-@NamedNativeQueries({
-        @NamedNativeQuery(name = Meal.UPDATE, query = "UPDATE meals SET description=:description, calories=:calories, date_time=:date_time " +
-                "WHERE id =:id AND user_id =:user_id", resultClass = Meal.class),
-})
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
@@ -28,13 +25,13 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.delete";
     public static final String GET_ALL = "Meal.getAll";
     public static final String GET_BETWEEN_HALF_OPEN = "Meal.getBetweenHalfOpen";
-    public static final String UPDATE = "Meal.update";
 
     @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
+    @NotBlank
     @Size(min = 2, max = 120)
     private String description;
 
@@ -42,7 +39,7 @@ public class Meal extends AbstractBaseEntity {
     @Range(min = 0)
     private int calories;
 
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

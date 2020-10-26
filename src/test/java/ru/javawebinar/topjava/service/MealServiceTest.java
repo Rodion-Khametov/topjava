@@ -36,6 +36,7 @@ public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
     private static final StringBuilder classLog = new StringBuilder();
+
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
 
@@ -46,6 +47,7 @@ public class MealServiceTest {
                     description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
         }
     };
+
     @Autowired
     private MealService service;
 
@@ -85,7 +87,6 @@ public class MealServiceTest {
         assertThrows(DataAccessException.class, () ->
                 service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
-
 
     @Test
     public void get() throws Exception {
