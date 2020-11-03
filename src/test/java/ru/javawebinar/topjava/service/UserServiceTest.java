@@ -1,17 +1,12 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -22,14 +17,9 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class UserServiceTest {
+//@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
+@ActiveProfiles("postgres")
+public abstract class UserServiceTest extends AbstractServiceTest {
 
     @Autowired
     private UserService service;
@@ -43,6 +33,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @Override
     public void create() {
         User created = service.create(getNew());
         int newId = created.id();
@@ -59,23 +50,27 @@ public class UserServiceTest {
     }
 
     @Test
+    @Override
     public void delete() {
         service.delete(USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(USER_ID));
     }
 
     @Test
+    @Override
     public void deletedNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
 
     @Test
+    @Override
     public void get() {
         User user = service.get(USER_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
     }
 
     @Test
+    @Override
     public void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
@@ -87,6 +82,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @Override
     public void update() {
         User updated = getUpdated();
         service.update(updated);

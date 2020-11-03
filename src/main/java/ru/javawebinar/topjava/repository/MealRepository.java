@@ -5,7 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface MealRepository {
+public interface MealRepository<T> {
     // null if updated meal do not belong to userId
     Meal save(Meal meal, int userId);
 
@@ -19,5 +19,9 @@ public interface MealRepository {
     List<Meal> getAll(int userId);
 
     // ORDERED dateTime desc
-    List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
+    List<Meal> getBetweenHalfOpen(T startDateTime, T endDateTime, int userId);
+
+    default Meal getMealWithUser(int id, int userId){
+        return null;
+    }
 }
