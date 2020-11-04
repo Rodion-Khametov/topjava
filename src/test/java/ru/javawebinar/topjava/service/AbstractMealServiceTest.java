@@ -1,11 +1,11 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
+import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -17,21 +17,19 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
-@ActiveProfiles("postgres")
-public abstract class MealServiceTest extends AbstractServiceTest {
+@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
+public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
-    @Override
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
     }
 
     @Test
-    @Override
     public void deletedNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
@@ -42,7 +40,6 @@ public abstract class MealServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    @Override
     public void create() {
         Meal created = service.create(getNew(), USER_ID);
         int newId = created.id();
@@ -60,14 +57,12 @@ public abstract class MealServiceTest extends AbstractServiceTest {
 
 
     @Test
-    @Override
     public void get() {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         MEAL_MATCHER.assertMatch(actual, adminMeal1);
     }
 
     @Test
-    @Override
     public void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
     }
@@ -78,7 +73,6 @@ public abstract class MealServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    @Override
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);

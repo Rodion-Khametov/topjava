@@ -5,14 +5,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.Profiles;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Repository
-@Profile("hsqldb")
-public class HSQLDBJdbcMealRepository extends JdbcMealRepository {
+@Profile(Profiles.HSQL_DB)
+public class HSQLDBJdbcMealRepository extends JdbcMealRepository<Timestamp> {
 
     @Autowired
     public HSQLDBJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -21,9 +21,7 @@ public class HSQLDBJdbcMealRepository extends JdbcMealRepository {
     }
 
     @Override
-    public List<Meal> getBetweenHalfOpen(Object startDateTime, Object endDateTime, int userId) {
-        startDateTime = Timestamp.valueOf((String) startDateTime);
-        endDateTime = Timestamp.valueOf((String) endDateTime);
-        return super.getBetweenHalfOpen(startDateTime, endDateTime, userId);
+    protected Timestamp getDateTime(LocalDateTime dateTime) {
+        return Timestamp.valueOf(dateTime);
     }
 }

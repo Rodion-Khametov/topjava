@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public class JpaMealRepository implements MealRepository<LocalDateTime> {
+public class JpaMealRepository implements MealRepository {
 
     @PersistenceContext
     private EntityManager em;

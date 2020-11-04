@@ -5,13 +5,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.Profiles;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Repository
-@Profile("postgres")
-public class PostgresJdbcMealRepository extends JdbcMealRepository {
+@Profile(Profiles.POSTGRES_DB)
+public class PostgresJdbcMealRepository extends JdbcMealRepository<LocalDateTime> {
 
     @Autowired
     public PostgresJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -19,7 +19,7 @@ public class PostgresJdbcMealRepository extends JdbcMealRepository {
     }
 
     @Override
-    public List<Meal> getBetweenHalfOpen(Object startDateTime, Object endDateTime, int userId) {
-        return super.getBetweenHalfOpen(startDateTime, endDateTime, userId);
+    protected LocalDateTime getDateTime(LocalDateTime dateTime) {
+        return dateTime;
     }
 }
