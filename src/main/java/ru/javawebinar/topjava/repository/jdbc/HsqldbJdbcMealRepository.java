@@ -12,12 +12,11 @@ import java.time.LocalDateTime;
 
 @Repository
 @Profile(Profiles.HSQL_DB)
-public class HSQLDBJdbcMealRepository extends JdbcMealRepository<Timestamp> {
+public class HsqldbJdbcMealRepository extends JdbcMealRepository<Timestamp> {
 
     @Autowired
-    public HSQLDBJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public HsqldbJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
-
     }
 
     @Override

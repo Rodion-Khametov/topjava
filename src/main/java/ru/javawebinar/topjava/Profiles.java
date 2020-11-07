@@ -26,23 +26,4 @@ public class Profiles {
             }
         }
     }
-
-    public static String getActiveReposProfile() {
-        try {
-            Class.forName("org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate");
-            return JDBC;
-        } catch (ClassNotFoundException ex) {
-            try {
-                Class.forName("org.springframework.orm.jpa.JpaTransactionManager");
-                return JPA;
-            } catch (ClassNotFoundException exception) {
-                try {
-                    Class.forName("org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean");
-                    return DATAJPA;
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalStateException("Could not find repository");
-                }
-            }
-        }
-    }
 }

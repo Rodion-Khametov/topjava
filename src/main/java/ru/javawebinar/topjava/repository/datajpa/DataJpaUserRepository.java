@@ -38,9 +38,7 @@ public class DataJpaUserRepository implements UserRepository {
     @Transactional
     @Override
     public User getUserWithMeals(int id) {
-        User user = get(id);
-        user.setMeals(crudMealRepository.getAll(id));
-        return user;
+        return get(id);
     }
 
     @Override
