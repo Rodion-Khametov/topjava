@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.MealTestData;
@@ -16,19 +15,14 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.List;
 
-import static java.time.LocalDateTime.of;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
-import static ru.javawebinar.topjava.TestUtil.readListFromJsonMvcResult;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 class MealRestControllerTest extends AbstractControllerTest {
@@ -61,7 +55,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(result -> assertMealToMatcher(result, MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
     }
 
     @Test
@@ -100,7 +94,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .param("endTime", "14:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> assertMealMatcher(result, mealsList));
+                .andExpect(result -> assertMealToMatcher(result, mealsList));
     }
 
     @Test
@@ -109,10 +103,6 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .param("startDate", ""))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> assertMealMatcher(result, MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
-    }
-
-    private void assertMealMatcher(MvcResult result, Collection<MealTo> expected) throws UnsupportedEncodingException {
-        assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(expected);
+                .andExpect(result -> assertMealToMatcher(result, MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
     }
 }
