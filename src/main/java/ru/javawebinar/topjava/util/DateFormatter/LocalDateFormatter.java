@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.dateFormatter;
+package ru.javawebinar.topjava.util.DateFormatter;
 
 import org.springframework.format.Formatter;
 import org.springframework.lang.Nullable;

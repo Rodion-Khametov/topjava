@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.timeFormatter;
+package ru.javawebinar.topjava.util.timeformatter;
 
 import org.springframework.format.AnnotationFormatterFactory;
 import org.springframework.format.Parser;

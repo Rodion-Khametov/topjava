@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.dateFormatter;
+package ru.javawebinar.topjava.util.dateformatter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

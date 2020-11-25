@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.util.timeFormatter;
+package ru.javawebinar.topjava.util.TimeFormatter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

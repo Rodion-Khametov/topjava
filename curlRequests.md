@@ -1,6 +1,6 @@
-##Change a Meal's state
+## Change a Meal's state
 
-###Request
+### Request
 
 'PUT /meals/:id'
 
@@ -13,16 +13,16 @@
         "calories": 510
 	}'
 
-###Response
+### Response
 
 HTTP/1.1 204 No Content
     Date: Tue, 24 Nov 2020 12:25:21 GMT
     Status: 204 No Content
     Connection: close
 
-##Create a new Meal
+## Create a new Meal
 	
-###Request
+### Request
 
 'POST /meals'
 	
@@ -35,7 +35,7 @@ HTTP/1.1 204 No Content
         "calories": 510
 	}'
 
-###Response
+### Response
 
  HTTP/1.1 201 Created
     Date: Tue, 24 Nov 2020 12:33:04 GMT
@@ -51,16 +51,16 @@ HTTP/1.1 204 No Content
         "user": null
     }
     
-##Get list of Meals
+## Get list of Meals
 
-###Request
+### Request
 
 'GETALL /meals'
 
 	curl --location --request GET 'http://localhost:8080/topjava/rest/meals' \
 	--header 'Content-Type: application/json' \
 	
-###Response
+### Response
 
  HTTP/1.1 200 OK
     Date: Tue, 24 Nov 2020 12:38:56 GMT
@@ -131,16 +131,16 @@ HTTP/1.1 204 No Content
         "excess": false
     }
 
-##Get list of Meals using filter
+## Get list of Meals using filter
 
-###Request
+### Request
 
 'GET FILTERED /meals/filter?startDate=&endDate=&startTime=&endTime='
 
 	curl --location --request GET 'http://localhost:8080/topjava/rest/meals/filter?startDate=2020-01-30&endDate=2020-01-30&startTime=10:00:00&endTime=23:00:00'
 	--header 'Content-Type: application/json' \
 	
-###Response	
+### Response	
 
  HTTP/1.1 200 OK
     Date: Tue, 24 Nov 2020 12:40:44 GMT
@@ -169,16 +169,16 @@ HTTP/1.1 204 No Content
         "excess": false
     }
 
-##Get a specific Meal
+## Get a specific Meal
 	
-###Request
+### Request
 
 'GET /meals/:id'
 	
 	curl --location --request GET 'http://localhost:8080/topjava/rest/meals/100004' \
 	--header 'Content-Type: application/json' \
 	
-###Response
+### Response
 
 HTTP/1.1 200 OK
     Date: Tue, 24 Nov 2020 12:46:47 GMT
@@ -193,16 +193,16 @@ HTTP/1.1 200 OK
         "user": null
     }
 
-##Delete a specific Meal
+## Delete a specific Meal
 
-###Request
+### Request
 
 'DELETE /meals/:id'
 	
 	curl --location --request DELETE 'http://localhost:8080/topjava/rest/meals/100006' \
 	--header 'Content-Type: application/json' \
 	
-###Response	
+### Response	
 
 HTTP/1.1 204 No Content
     Date: Tue, 24 Nov 2020 12:45:19 GMT

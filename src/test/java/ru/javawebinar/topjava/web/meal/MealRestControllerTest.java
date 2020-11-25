@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.meal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.MealTestData;
@@ -15,8 +16,8 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
@@ -91,10 +92,7 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetweenDateTime() throws Exception {
-        List<MealTo> mealsList = List.of(
-                //new MealTo(100004, of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500, false),
-                //new MealTo(100003, of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000, false),
-                new MealTo(100007, of(2020, Month.JANUARY, 31, 13, 0), "Обед", 1000, true));
+        List<MealTo> mealsList = List.of(MealsUtil.createTo(meal6, true));
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
                 .param("startDate", "2020-01-31")
                 .param("endDate", "2020-01-31")
@@ -102,18 +100,19 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .param("endTime", "14:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(mealsList));
+                .andExpect(result -> assertMealMatcher(result, mealsList));
     }
 
     @Test
     void getBetweenNullDates() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDate", "")
-                .param("endDate", (String) null)
-                .param("startTime", (String) null)
-                .param("endTime", (String) null))
+                .param("startDate", ""))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(result -> assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(result -> assertMealMatcher(result, MealsUtil.getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
+    }
+
+    private void assertMealMatcher(MvcResult result, Collection<MealTo> expected) throws UnsupportedEncodingException {
+        assertThat(readListFromJsonMvcResult(result, MealTo.class)).isEqualTo(expected);
     }
 }
